@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1744200140 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\citacoes.c
+
+1744211401 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.c
+	"arvore_avl.h"
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+
+1744211408 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.h
+	"citacoes.h"
+
+1744211391 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\citacoes.h
+
+1744211417 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.c
+	"arvore_binaria.h"
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+
+1744211423 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.h
+	"citacoes.h"
+
+1744211430 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.c
+	"busca_binaria.h"
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+
+1744211436 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.h
+	"citacoes.h"
+
+1744211460 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"busca_binaria.h"
+	"arvore_binaria.h"
+	"arvore_avl.h"
+	"processamento.h"
+
+1744211491 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.h
+	<stdio.h>
+	"arvore_avl.h"
+	"arvore_binaria.h"
+	"busca_binaria.h"
+
+1744207117 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.c
+	"processamento.h"
+	<ctype.h>
+	<string.h>
+	<stdlib.h>
+	<stdio.h>
+
