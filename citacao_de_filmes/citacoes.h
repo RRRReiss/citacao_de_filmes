@@ -1,11 +1,11 @@
 #ifndef QUOTEREPO_H
 #define QUOTEREPO_H
 
-typedef struct {
-    char *word;
-    int frequency;
+typedef struct EntradaRepositorio{
+    char *palavra;
+    int frequencia;
     long *offsets;
-    int offset_count;
-} WordEntry;
+    int offset_cont;
+} EntradaRepositorio;
 
 #endif

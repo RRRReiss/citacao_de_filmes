@@ -3,15 +3,15 @@
 
 #include "citacoes.h"
 
-typedef struct AVLNode {
-    WordEntry entry;
-    struct AVLNode *left;
-    struct AVLNode *right;
-    int height;
-} AVLNode;
+typedef struct NoAVL {
+    EntradaRepositorio entrada;
+    struct NoAVL *esq;
+    struct NoAVL *dir;
+    int altura;
+} NoAVL;
 
-void avl_insert(AVLNode **root, const char *word, int count, long offset);
-WordEntry *avl_search(AVLNode *root, const char *word);
-void avl_destroy(AVLNode *root);
+void insere_avl(NoAVL **raiz, const char *palavra, int cont, long offset);
+EntradaRepositorio *pesquisa_avl(NoAVL *raiz, const char *palavra);
+void destroi_avl(NoAVL *raiz);
 
 #endif
