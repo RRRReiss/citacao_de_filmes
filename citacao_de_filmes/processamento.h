@@ -6,14 +6,14 @@
 #include "arvore_binaria.h"
 #include "busca_binaria.h"
 
-typedef struct {
-    char *quote;
-    char *movie;
-    int year;
-} QuoteInfo;
+typedef struct InfoCitacao{
+    char *citacao;
+    char *filme;
+    int ano;
+} InfoCitacao;
 
-void normalize_word(char *word);
-int parse_line(const char *line, QuoteInfo *info);
-void process_file(const char *filename, BSArray *bs_array, BSTNode **bst_root, AVLNode **avl_root);
+void normaliza_palavra(char *palavra);
+void analisa_linha(const char *linha, InfoCitacao *info);
+void leitura_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, NoArvoreBusca **no_arvbus, NoAVL **no_avl);
 
 #endif

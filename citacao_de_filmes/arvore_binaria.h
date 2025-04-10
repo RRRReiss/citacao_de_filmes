@@ -3,14 +3,14 @@
 
 #include "citacoes.h"
 
-typedef struct BSTNode {
-    WordEntry entry;
-    struct BSTNode *left;
-    struct BSTNode *right;
-} BSTNode;
+typedef struct NoArvoreBusca {
+    EntradaRepositorio entrada;
+    struct NoArvoreBusca *esq;
+    struct NoArvoreBusca *dir;
+} NoArvoreBusca;
 
-void bst_insert(BSTNode **root, const char *word, int count, long offset);
-WordEntry *bst_search(BSTNode *root, const char *word);
-void bst_destroy(BSTNode *root);
+void insere_arvbus(NoArvoreBusca **raiz, const char *palavra, int cont, long offset);
+EntradaRepositorio *pesquisa_arvbus(NoArvoreBusca *raiz, const char *palavra);
+void destroi_arvbus(NoArvoreBusca *raiz);
 
 #endif
