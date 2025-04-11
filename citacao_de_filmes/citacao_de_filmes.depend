@@ -15,18 +15,18 @@
 
 1744322273 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.c
 
-1744319733 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.h
+1744404373 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.h
 	"citacoes.h"
 
 1744322273 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\main.c
 
-1744319733 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.h
+1744322352 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.h
 	<stdio.h>
 	"arvore_avl.h"
 	"arvore_binaria.h"
 	"busca_binaria.h"
 
-1744207117 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.c
+1744322612 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.c
 	"processamento.h"
 	<ctype.h>
 	<string.h>

@@ -8,9 +8,10 @@ typedef struct VetorBuscaBinaria{
     int tamanho;
 } VetorBuscaBinaria;
 
+int busca_binaria(EntradaRepositorio *entradas, int qtd_entradas, char *palavra);
 void inicializa_busbin(VetorBuscaBinaria *vetor);
 void destroi_busbin(VetorBuscaBinaria *vetor);
-void insere_busbin(VetorBuscaBinaria *vetor, const char *palavra, int cont, long offset);
-EntradaRepositorio *pesquisa_busbin(VetorBuscaBinaria *vetor, const char *palavra);
+void insere_busbin(VetorBuscaBinaria *vetor, char *palavra, int cont, long offset);
+EntradaRepositorio *pesquisa_busbin(VetorBuscaBinaria *vetor, char *palavra);
 
 #endif
