@@ -31,7 +31,7 @@ void mostrar_citacoes(const char *arquivo, EntradaRepositorio *entrada) {
         fgets(linha, sizeof(linha), fp);
         InfoCitacao info;
         analisa_linha(linha, &info);
-        printf("- \"%s\" (%s, %d)\n", info.citacao, info.filme, info.ano);
+        printf("- \"%s\" (%s, %s)\n", info.citacao, info.filme, info.ano);
         free(info.citacao);
         free(info.filme);
     }
@@ -109,8 +109,16 @@ int main() {
                     entrada.frequencia = vetor_bin.entradas[i].frequencia;
                     entrada.offset_cont = vetor_bin.entradas[i].offset_cont;
                     entrada.offsets = malloc(sizeof(long) * entrada.offset_cont);
+                    // Adicionar verificação de falha de malloc/strdup seria bom
                     memcpy(entrada.offsets, vetor_bin.entradas[i].offsets, sizeof(long) * entrada.offset_cont);
-                    insere_avl_frequencia(&raiz_freq_global, entrada);
+
+                    raiz_freq_global = insere_avl_frequencia(&raiz_freq_global, entrada); // Assumindo que insere_avl_frequencia também é NoAVL* func(NoAVL**, ...) ou ajustada
+
+                    // Como insere_avl_frequencia faz cópias (via cria_no_avl) ou ignora
+                    // a entrada em caso de duplicata, a memória alocada localmente
+                    // para 'entrada' aqui pode ser liberada após a chamada.
+                    free(entrada.palavra);
+                    free(entrada.offsets);
                 }
 
                 carregado = 1;

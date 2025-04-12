@@ -141,8 +141,6 @@ NoAVL* insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada) {
         } else if (cmp > 0) {
             (*raiz)->dir = insere_avl_frequencia(&(*raiz)->dir, entrada);
         } else {
-            free(entrada.palavra);
-            free(entrada.offsets);
             return *raiz;
         }
     }
