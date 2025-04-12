@@ -15,10 +15,11 @@ int altura(NoAVL *no);
 int fator_balanceamento(NoAVL *no);
 NoAVL* rotacao_direita(NoAVL *y);
 NoAVL* rotacao_esquerda(NoAVL *x);
+void add_offset_avl(EntradaRepositorio *entrada, long offset);
 NoAVL* insere_avl(NoAVL **raiz, EntradaRepositorio entrada);
 EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, char *palavra);
 void destroi_avl(NoAVL *raiz);
 void em_ordem_frequencia(NoAVL *no);
-void insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada);
+NoAVL* insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada);
 
 #endif

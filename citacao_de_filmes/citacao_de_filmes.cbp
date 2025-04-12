@@ -31,9 +31,26 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="arvore_avl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="arvore_avl.h" />
+		<Unit filename="arvore_binaria.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="arvore_binaria.h" />
+		<Unit filename="busca_binaria.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="busca_binaria.h" />
+		<Unit filename="citacoes.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="processamento.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="processamento.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
