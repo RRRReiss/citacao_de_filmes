@@ -105,11 +105,7 @@ int main() {
                     entrada.frequencia = vetor_bin.entradas[i].frequencia;
                     entrada.offset_cont = vetor_bin.entradas[i].offset_cont;
                     entrada.offsets = malloc(sizeof(long) * entrada.offset_cont);
-
-                    for (int j = 0; j < entrada.offset_cont; j++) {
-                        entrada.offsets[j] = vetor_bin.entradas[i].offsets[j];
-                    }
-
+                    memcpy(entrada.offsets, vetor_bin.entradas[i].offsets, sizeof(long) * entrada.offset_cont);
                     insere_avl_frequencia(&raiz_freq_global, entrada);
                 }
 
