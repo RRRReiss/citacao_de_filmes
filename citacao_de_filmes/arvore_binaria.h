@@ -9,8 +9,9 @@ typedef struct NoArvoreBusca {
     struct NoArvoreBusca *dir;
 } NoArvoreBusca;
 
-void insere_arvbus(NoArvoreBusca **raiz, const char *palavra, int cont, long offset);
-EntradaRepositorio *pesquisa_arvbus(NoArvoreBusca *raiz, const char *palavra);
+void add_offset(EntradaRepositorio *entrada, long offset);
+void insere_arvbus(NoArvoreBusca **raiz, char *palavra, int cont, long offset);
+EntradaRepositorio *pesquisa_arvbus(NoArvoreBusca *raiz, char *palavra);
 void destroi_arvbus(NoArvoreBusca *raiz);
 
 #endif

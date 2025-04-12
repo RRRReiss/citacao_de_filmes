@@ -10,7 +10,7 @@ typedef struct NoAVL {
     int altura;
 } NoAVL;
 
-void insere_avl(NoAVL **raiz, const char *palavra, int cont, long offset);
+void insere_avl(NoAVL **raiz, EntradaRepositorio entrada);
 EntradaRepositorio *pesquisa_avl(NoAVL *raiz, const char *palavra);
 void destroi_avl(NoAVL *raiz);
 
