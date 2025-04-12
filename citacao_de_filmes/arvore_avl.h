@@ -10,9 +10,15 @@ typedef struct NoAVL {
     int altura;
 } NoAVL;
 
-void insere_avl(NoAVL **raiz, EntradaRepositorio entrada);
-EntradaRepositorio *pesquisa_avl(NoAVL *raiz, const char *palavra);
-void em_ordem_avl(NoAVL *raiz);
+// Para árvore alfabética
+void insere_avl_alfabeto(NoAVL **raiz, EntradaRepositorio entrada);
+EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, const char *palavra);
+
+// Para árvore de frequência
+void insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada);
+void em_ordem_frequencia(NoAVL *raiz);
+
+// Funções comuns
 void destroi_avl(NoAVL *raiz);
 
 #endif
