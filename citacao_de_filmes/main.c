@@ -77,7 +77,7 @@ int main() {
     NoArvoreBusca *raiz_bin = NULL;
     NoAVL *raiz_avl = NULL;
 
-    char arquivo[] = "movie_quotes.csv";
+    char arquivo[100];
     int opcao;
     char palavra[100];
     int carregado = 0;
@@ -90,10 +90,14 @@ int main() {
         printf("0. Sair\n");
         printf("Escolha: ");
         scanf("%d", &opcao);
-        getchar();
+        getchar(); // consome o \n após o número
 
         switch (opcao) {
             case 1:
+                printf("Digite o nome do arquivo (ex: movie_quotes.csv): ");
+                fgets(arquivo, sizeof(arquivo), stdin);
+                arquivo[strcspn(arquivo, "\n")] = '\0'; // remove o \n do final
+
                 inicializa_busbin(&vetor_bin);
                 processa_arquivo(arquivo, &vetor_bin, &raiz_bin, &raiz_avl);
                 printf("Arquivo carregado e estruturas preenchidas!\n");
