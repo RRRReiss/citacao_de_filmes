@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -33,19 +34,15 @@ int main() {
     double bs_time, bst_time, avl_time;
 
     start = clock();
-    process_file(filename, &bs_array, &bst_root, &avl_root);
+    process_file(filename, &bs_array, NULL, NULL);
     end = clock();
     bs_time = ((double)(end - start)) / CLOCKS_PER_SEC;
 
     bs_array_destroy(&bs_array);
     bs_array_init(&bs_array);
-    bst_destroy(bst_root);
-    bst_root = NULL;
-    avl_destroy(avl_root);
-    avl_root = NULL;
 
     start = clock();
-    process_file(filename, &bs_array, &bst_root, &avl_root);
+    process_file(filename, &bs_array, &bst_root, NULL);
     end = clock();
     bst_time = ((double)(end - start)) / CLOCKS_PER_SEC;
 
@@ -53,11 +50,9 @@ int main() {
     bs_array_init(&bs_array);
     bst_destroy(bst_root);
     bst_root = NULL;
-    avl_destroy(avl_root);
-    avl_root = NULL;
 
     start = clock();
-    process_file(filename, &bs_array, &bst_root, &avl_root);
+    process_file(filename, &bs_array, NULL, &avl_root);
     end = clock();
     avl_time = ((double)(end - start)) / CLOCKS_PER_SEC;
 
@@ -81,8 +76,11 @@ int main() {
 
     if (entry) {
         printf("BS Array - Frequency: %d\n", entry->frequency);
-        for (int i = 0; i < entry->offset_count; i++) display_quote_info(file, entry->offsets[i]);
-    } else printf("Word not found in BS Array\n");
+        for (int i = 0; i < entry->offset_count; i++)
+            display_quote_info(file, entry->offsets[i]);
+    } else {
+        printf("Word not found in BS Array\n");
+    }
 
     start = clock();
     entry = bst_search(bst_root, word);
@@ -91,8 +89,11 @@ int main() {
 
     if (entry) {
         printf("BST - Frequency: %d\n", entry->frequency);
-        for (int i = 0; i < entry->offset_count; i++) display_quote_info(file, entry->offsets[i]);
-    } else printf("Word not found in BST\n");
+        for (int i = 0; i < entry->offset_count; i++)
+            display_quote_info(file, entry->offsets[i]);
+    } else {
+        printf("Word not found in BST\n");
+    }
 
     start = clock();
     entry = avl_search(avl_root, word);
@@ -101,10 +102,14 @@ int main() {
 
     if (entry) {
         printf("AVL - Frequency: %d\n", entry->frequency);
-        for (int i = 0; i < entry->offset_count; i++) display_quote_info(file, entry->offsets[i]);
-    } else printf("Word not found in AVL\n");
+        for (int i = 0; i < entry->offset_count; i++)
+            display_quote_info(file, entry->offsets[i]);
+    } else {
+        printf("Word not found in AVL\n");
+    }
 
-    printf("Search times:\nBS Array: %f\nBST: %f\nAVL: %f\n", bs_search_time, bst_search_time, avl_search_time);
+    printf("Search times:\nBS Array: %f\nBST: %f\nAVL: %f\n",
+           bs_search_time, bst_search_time, avl_search_time);
 
     fclose(file);
     bs_array_destroy(&bs_array);
