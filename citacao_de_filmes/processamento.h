@@ -5,6 +5,7 @@
 #include "arvore_avl.h"
 #include "arvore_binaria.h"
 #include "busca_binaria.h"
+#include "citacoes.h"
 
 typedef struct InfoCitacao{
     char *citacao;
