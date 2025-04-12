@@ -32,34 +32,39 @@ void destroi_busbin(VetorBuscaBinaria *vetor){
     vetor->tamanho = 0;
 }
 
-void insere_busbin(VetorBuscaBinaria *vetor, char *palavra, int cont, long offset){
-    int pos = busca_binaria(vetor->entradas, vetor->tamanho, palavra);
-    EntradaRepositorio nova_entrada;
-    if(pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, palavra) == 0){
-        vetor->entradas[pos].frequencia += cont;
-        for(int i = 0; i < vetor->entradas[pos].offset_cont; i++){
-            if(vetor->entradas[pos].offsets[i] == offset)
-                return;
+void insere_busbin(VetorBuscaBinaria *vetor, EntradaRepositorio entrada){
+    int pos = busca_binaria(vetor->entradas, vetor->tamanho, entrada.palavra);
+    if(pos >= 0 && pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, entrada.palavra) == 0){
+        vetor->entradas[pos].frequencia += entrada.frequencia;
+        for(int i = 0; i < entrada.offset_cont; i++){
+            int j;
+            for(j = 0; j < vetor->entradas[pos].offset_cont; j++){
+                if(vetor->entradas[pos].offsets[j] == entrada.offsets[i])
+                    break;
+            }
+            if(j == vetor->entradas[pos].offset_cont){
+                vetor->entradas[pos].offsets = realloc(vetor->entradas[pos].offsets, (vetor->entradas[pos].offset_cont + 1)*sizeof(long));
+                vetor->entradas[pos].offsets[vetor->entradas[pos].offset_cont++] = entrada.offsets[i];
+            }
         }
-        vetor->entradas[pos].offsets = realloc(vetor->entradas[pos].offsets, (vetor->entradas[pos].offset_cont + 1)*sizeof(long));
-        vetor->entradas[pos].offsets[vetor->entradas[pos].offset_cont++] = offset;
     }
     else {
-        strcpy(nova_entrada.palavra, palavra);
-        nova_entrada.frequencia = cont;
-        nova_entrada.offsets = (long*)malloc(sizeof(long));
-        nova_entrada.offset_cont = 1;
-        nova_entrada.offsets[0] = offset;
-        vetor->entradas = realloc(vetor->entradas, (vetor->tamanho+1)*sizeof(EntradaRepositorio));
+        EntradaRepositorio *temp = realloc(vetor->entradas, (vetor->tamanho + 1) * sizeof(EntradaRepositorio));
+        if (temp == NULL) {
+            fprintf(stderr, "Erro ao alocar memória para entradas.\n");
+            exit(1);
+        }
+        vetor->entradas = temp;
+        if(pos < 0) pos = vetor->tamanho;
         memmove(&vetor->entradas[pos+1], &vetor->entradas[pos], (vetor->tamanho - pos)*sizeof(EntradaRepositorio));
-        vetor->entradas[pos] = nova_entrada;
+        vetor->entradas[pos] = entrada;
         vetor->tamanho++;
     }
 }
 
 EntradaRepositorio *pesquisa_busbin(VetorBuscaBinaria *vetor, char *palavra){
     int pos = busca_binaria(vetor->entradas, vetor->tamanho, palavra);
-    if(pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, palavra) == 0){
+    if(pos >= 0 && pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, palavra) == 0){
         return &vetor->entradas[pos];
     }
     return NULL;
