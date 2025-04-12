@@ -8,20 +8,21 @@
 #include "arvore_binaria.h"
 #include "arvore_avl.h"
 
+// arvore AVL que ordena por frequencia
 NoAVL *raiz_freq_global = NULL;
 
-//funcao para mostrar as citações associadas à palavra encontrada
+// mostra as citacoes de uma palavra encontrada (usando offsets)
 void mostrar_citacoes(const char *arquivo, EntradaRepositorio *entrada) {
     if (!entrada) {
-        printf("Palavra não encontrada.\n");
+        printf("Palavra nao encontrada.\n");
         return;
     }
 
-    printf("Frequência: %d\n", entrada->frequencia);
+    printf("Frequencia: %d\n", entrada->frequencia);
 
     FILE *fp = fopen(arquivo, "r");
     if (!fp) {
-        perror("Erro ao abrir o arquivo para exibir citações");
+        perror("Erro ao abrir o arquivo para exibir citacoes");
         return;
     }
 
@@ -39,7 +40,7 @@ void mostrar_citacoes(const char *arquivo, EntradaRepositorio *entrada) {
     fclose(fp);
 }
 
-//funcao para buscar uma palavra nas 3 estruturas
+// busca a palavra nas 3 estruturas (vetor, arvore binaria e AVL)
 void buscar_palavra(const char *arquivo, const char *palavra, VetorBuscaBinaria *vet, NoArvoreBusca *raiz_bin, NoAVL *raiz_avl) {
     char normalizada[100];
     strcpy(normalizada, palavra);
@@ -53,22 +54,25 @@ void buscar_palavra(const char *arquivo, const char *palavra, VetorBuscaBinaria 
     clock_t ini, fim;
     EntradaRepositorio *res;
 
+    // vetor (busca binaria)
     ini = clock();
     res = pesquisa_busbin(vet, normalizada);
     fim = clock();
-    printf("\n Vetor (busca binária) [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
+    printf("\n Vetor (busca binaria) [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
     mostrar_citacoes(arquivo, res);
 
+    // arvore binaria de busca
     ini = clock();
     res = pesquisa_arvbus(raiz_bin, normalizada);
     fim = clock();
-    printf("\n Árvore Binária de Busca [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
+    printf("\n Arvore Binaria de Busca [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
     mostrar_citacoes(arquivo, res);
 
+    // arvore AVL
     ini = clock();
     res = pesquisa_avl_alfabeto(raiz_avl, normalizada);
     fim = clock();
-    printf("\n Árvore AVL [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
+    printf("\n Arvore AVL [%.6f s]:\n", (double)(fim - ini) / CLOCKS_PER_SEC);
     mostrar_citacoes(arquivo, res);
 }
 
@@ -86,37 +90,34 @@ int main() {
         printf("\n--- MENU ---\n");
         printf("1. Carregar e processar arquivo\n");
         printf("2. Buscar palavra\n");
-        printf("3. Listar palavras por frequência (AVL)\n");
+        printf("3. Listar palavras por frequencia (AVL)\n");
         printf("0. Sair\n");
         printf("Escolha: ");
         scanf("%d", &opcao);
-        getchar(); // consome o \n após o número
+        getchar(); // limpa o \n deixado pelo scanf
 
         switch (opcao) {
             case 1:
                 printf("Digite o nome do arquivo (ex: movie_quotes.csv): ");
                 fgets(arquivo, sizeof(arquivo), stdin);
-                arquivo[strcspn(arquivo, "\n")] = '\0'; // remove o \n do final
+                arquivo[strcspn(arquivo, "\n")] = '\0'; // remove \n do final
 
                 inicializa_busbin(&vetor_bin);
                 processa_arquivo(arquivo, &vetor_bin, &raiz_bin, &raiz_avl);
                 printf("Arquivo carregado e estruturas preenchidas!\n");
 
-                //criar árvore AVL ordenada por frequência
+                // construir arvore AVL por frequencia
                 for (int i = 0; i < vetor_bin.tamanho; i++) {
                     EntradaRepositorio entrada;
                     entrada.palavra = strdup(vetor_bin.entradas[i].palavra);
                     entrada.frequencia = vetor_bin.entradas[i].frequencia;
                     entrada.offset_cont = vetor_bin.entradas[i].offset_cont;
                     entrada.offsets = malloc(sizeof(long) * entrada.offset_cont);
-                    // Adicionar verificação de falha de malloc/strdup seria bom
                     memcpy(entrada.offsets, vetor_bin.entradas[i].offsets, sizeof(long) * entrada.offset_cont);
 
-                    raiz_freq_global = insere_avl_frequencia(&raiz_freq_global, entrada); // Assumindo que insere_avl_frequencia também é NoAVL* func(NoAVL**, ...) ou ajustada
+                    raiz_freq_global = insere_avl_frequencia(&raiz_freq_global, entrada);
 
-                    // Como insere_avl_frequencia faz cópias (via cria_no_avl) ou ignora
-                    // a entrada em caso de duplicata, a memória alocada localmente
-                    // para 'entrada' aqui pode ser liberada após a chamada.
+                    // libera memoria local apos insercao
                     free(entrada.palavra);
                     free(entrada.offsets);
                 }
@@ -126,7 +127,7 @@ int main() {
 
             case 2:
                 if (!carregado) {
-                    printf("⚠ Primeiro carregue o arquivo!\n");
+                    printf("Primeiro carregue o arquivo!\n");
                     break;
                 }
                 printf("Digite a palavra a buscar: ");
@@ -136,10 +137,10 @@ int main() {
 
             case 3:
                 if (!carregado) {
-                    printf("⚠ Primeiro carregue o arquivo!\n");
+                    printf("Primeiro carregue o arquivo!\n");
                     break;
                 }
-                printf("Palavras em ordem decrescente de frequência:\n");
+                printf("Palavras em ordem decrescente de frequencia:\n");
                 em_ordem_frequencia(raiz_freq_global);
                 break;
 
@@ -148,11 +149,12 @@ int main() {
                 break;
 
             default:
-                printf("Opção inválida.\n");
+                printf("Opcao invalida.\n");
         }
 
     } while (opcao != 0);
 
+    // libera memoria
     destroi_busbin(&vetor_bin);
     destroi_arvbus(raiz_bin);
     destroi_avl(raiz_avl);
