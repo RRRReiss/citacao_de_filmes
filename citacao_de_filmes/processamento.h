@@ -14,6 +14,6 @@ typedef struct InfoCitacao{
 
 void normaliza_palavra(char *palavra);
 void analisa_linha(const char *linha, InfoCitacao *info);
-void leitura_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, NoArvoreBusca **no_arvbus, NoAVL **no_avl);
+void processa_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, NoArvoreBusca **no_arvbus, NoAVL **no_avl);
 
 #endif
