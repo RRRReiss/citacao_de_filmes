@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// adiciona um novo offset na lista de offsets, evitando duplicações
 void add_offset_arvbus(EntradaRepositorio *entrada, long offset) {
     for(int i = 0; i < entrada->offset_cont; i++) {
         if(entrada->offsets[i] == offset)
@@ -12,6 +13,8 @@ void add_offset_arvbus(EntradaRepositorio *entrada, long offset) {
     entrada->offsets[entrada->offset_cont++] = offset;
 }
 
+// insere uma nova palavra na árvore binária de busca (alfabética)
+// se a palavra já existir, apenas atualiza a frequência e os offsets
 void insere_arvbus(NoArvoreBusca **raiz, EntradaRepositorio entrada){
     NoArvoreBusca *novo_no;
     if(*raiz == NULL){
@@ -36,6 +39,7 @@ void insere_arvbus(NoArvoreBusca **raiz, EntradaRepositorio entrada){
     }
 }
 
+// busca uma palavra na árvore binária de busca
 EntradaRepositorio *pesquisa_arvbus(NoArvoreBusca *raiz, char *palavra){
     if(raiz == NULL)
         return NULL;
@@ -47,6 +51,7 @@ EntradaRepositorio *pesquisa_arvbus(NoArvoreBusca *raiz, char *palavra){
         return &raiz->entrada;
 }
 
+// libera toda a memória alocada pela árvore binária
 void destroi_arvbus(NoArvoreBusca *raiz){
     if(raiz == NULL)
         return;
