@@ -10,7 +10,7 @@
 typedef struct InfoCitacao{
     char *citacao;
     char *filme;
-    int ano;
+    char *ano;
 } InfoCitacao;
 
 void normaliza_palavra(char *palavra);
