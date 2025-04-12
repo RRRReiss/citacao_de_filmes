@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "busca_binaria.h"
 #include "arvore_binaria.h"
 #include "arvore_avl.h"
@@ -10,78 +9,80 @@
 int main() {
     VetorBuscaBinaria vetor_busbin;
     NoArvoreBusca *raiz_bst = NULL;
-    NoAVL *raiz_avl = NULL;
-
-    int opcao;
-    char nome_arquivo[100];
-    char palavra[100];
+    NoAVL *raiz_avl_alfabeto = NULL;
+    NoAVL *raiz_avl_frequencia = NULL;
 
     inicializa_busbin(&vetor_busbin);
 
+    int opcao;
+    char nome_arquivo[100], palavra[100];
+    
     do {
         printf("\n========= MENU =========\n");
-        printf("1 - Carregar arquivo de citacoes\n");
+        printf("1 - Carregar arquivo\n");
         printf("2 - Buscar palavra\n");
-        printf("3 - Listar palavras por frequencia (AVL)\n");
+        printf("3 - Listar por frequencia\n");
         printf("0 - Sair\n");
         printf("========================\n");
-        printf("Escolha uma opcao: ");
+        printf("Opcao: ");
         scanf("%d", &opcao);
 
-        switch (opcao) {
+        switch(opcao) {
             case 1:
-                printf("Digite o nome do arquivo (ex: movie_quotes_subconjunto.csv): ");
+                printf("Arquivo: ");
                 scanf("%s", nome_arquivo);
-                processa_arquivo(nome_arquivo, &vetor_busbin, &raiz_bst, &raiz_avl);
-                printf("\nArquivo processado com sucesso!\n");
+                processa_arquivo(nome_arquivo, &vetor_busbin, &raiz_bst, &raiz_avl_alfabeto);
+                printf("Dados carregados!\n");
                 break;
 
             case 2:
-                printf("Digite a palavra que deseja buscar: ");
+                printf("Palavra: ");
                 scanf("%s", palavra);
                 normaliza_palavra(palavra);
 
-                EntradaRepositorio *res_vet = pesquisa_busbin(&vetor_busbin, palavra);
-                EntradaRepositorio *res_bst = pesquisa_arvbus(raiz_bst, palavra);
-                EntradaRepositorio *res_avl = pesquisa_avl(raiz_avl, palavra);
+                // Pesquisas
+                EntradaRepositorio *vet = pesquisa_busbin(&vetor_busbin, palavra);
+                EntradaRepositorio *bst = pesquisa_arvbus(raiz_bst, palavra);
+                EntradaRepositorio *avl = pesquisa_avl_alfabeto(raiz_avl_alfabeto, palavra);
 
-                printf("\n--- RESULTADOS ---\n");
-
-                if (res_vet)
-                    printf("[VETOR] '%s' - %d ocorrencias\n", palavra, res_vet->frequencia);
-                else
-                    printf("[VETOR] Palavra nao encontrada.\n");
-
-                if (res_bst)
-                    printf("[BST]   '%s' - %d ocorrencias\n", palavra, res_bst->frequencia);
-                else
-                    printf("[BST] Palavra nao encontrada.\n");
-
-                if (res_avl)
-                    printf("[AVL]   '%s' - %d ocorrencias\n", palavra, res_avl->frequencia);
-                else
-                    printf("[AVL] Palavra nao encontrada.\n");
-
+                // Exibir resultados
+                printf("\n[VETOR] %s: %s\n", 
+                    vet ? "Encontrado" : "Nao encontrado", 
+                    vet ? vet->palavra : "");
+                    
+                printf("[BST]   %s: %s\n", 
+                    bst ? "Encontrado" : "Nao encontrado", 
+                    bst ? bst->palavra : "");
+                    
+                printf("[AVL]   %s: %s\n\n", 
+                    avl ? "Encontrado" : "Nao encontrado", 
+                    avl ? avl->palavra : "");
                 break;
 
             case 3:
-                printf("\nPalavras ordenadas por frequencia (em ordem AVL):\n");
-                em_ordem_avl(raiz_avl);
+                // Construir AVL de frequência
+                if(raiz_avl_frequencia) destroi_avl(raiz_avl_frequencia);
+                raiz_avl_frequencia = NULL;
+                
+                for(int i = 0; i < vetor_busbin.tamanho; i++) {
+                    insere_avl_frequencia(&raiz_avl_frequencia, vetor_busbin.entradas[i]);
+                }
+                
+                printf("\nFrequencia das palavras:\n");
+                em_ordem_frequencia(raiz_avl_frequencia);
                 break;
 
             case 0:
-                printf("Saindo...\n");
+                printf("Encerrando...\n");
                 break;
-
-            default:
-                printf("Opcao invalida!\n");
         }
+    } while(opcao != 0);
 
-    } while (opcao != 0);
-
+    // Liberar memória
     destroi_busbin(&vetor_busbin);
     destroi_arvbus(raiz_bst);
-    destroi_avl(raiz_avl);
+    destroi_avl(raiz_avl_alfabeto);
+    destroi_avl(raiz_avl_frequencia);
 
     return 0;
 }
