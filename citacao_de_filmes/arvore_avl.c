@@ -3,116 +3,112 @@
 #include <string.h>
 #include <stdio.h>
 
-// Funções auxiliares
-int altura(NoAVL *no) { return (no) ? no->altura : 0; }
-int max(int a, int b) { return (a > b) ? a : b; }
+NoAVL* cria_no_avl(EntradaRepositorio entrada) {
+    NoAVL *novo_no = (NoAVL*)malloc(sizeof(NoAVL));
+    novo_no->entrada.palavra = strdup(entrada.palavra);
+    novo_no->entrada.frequencia = entrada.frequencia;
+    novo_no->entrada.offset_cont = entrada.offset_cont;
+    novo_no->entrada.offsets = malloc(sizeof(long) * entrada.offset_cont);
+    memcpy(novo_no->entrada.offsets, entrada.offsets, sizeof(long) * entrada.offset_cont);
+    novo_no->altura = 1;
+    novo_no->esq = NULL;
+    novo_no->dir = NULL;
+    return novo_no;
+}
+
+int altura(NoAVL *no) {
+    return no ? no->altura : 0;
+}
+
+int fator_balanceamento(NoAVL *no) {
+    return no ? altura(no->esq) - altura(no->dir) : 0;
+}
 
 NoAVL* rotacao_direita(NoAVL *y) {
     NoAVL *x = y->esq;
-    y->esq = x->dir;
+    NoAVL *T2 = x->dir;
+
     x->dir = y;
-    
-    y->altura = max(altura(y->esq), altura(y->dir)) + 1;
-    x->altura = max(altura(x->esq), altura(x->dir)) + 1;
+    y->esq = T2;
+
+    y->altura = 1 + ((altura(y->esq) > altura(y->dir)) ? altura(y->esq) : altura(y->dir));
+    x->altura = 1 + ((altura(x->esq) > altura(x->dir)) ? altura(x->esq) : altura(x->dir));
+
     return x;
 }
 
 NoAVL* rotacao_esquerda(NoAVL *x) {
     NoAVL *y = x->dir;
-    x->dir = y->esq;
+    NoAVL *T2 = y->esq;
+
     y->esq = x;
-    
-    x->altura = max(altura(x->esq), altura(x->dir)) + 1;
-    y->altura = max(altura(y->esq), altura(y->dir)) + 1;
+    x->dir = T2;
+
+    x->altura = 1 + ((altura(x->esq) > altura(x->dir)) ? altura(x->esq) : altura(x->dir));
+    y->altura = 1 + ((altura(y->esq) > altura(y->dir)) ? altura(y->esq) : altura(y->dir));
+
     return y;
 }
 
-int balanceamento(NoAVL *no) {
-    return (no) ? altura(no->esq) - altura(no->dir) : 0;
+void add_offset_avl(EntradaRepositorio *entrada, long offset) {
+    for(int i = 0; i < entrada->offset_cont; i++) {
+        if(entrada->offsets[i] == offset)
+            return;
+    }
+    entrada->offsets = realloc(entrada->offsets, (entrada->offset_cont + 1)*sizeof(long));
+    entrada->offsets[entrada->offset_cont++] = offset;
 }
 
-// Árvore alfabética
-void insere_avl_alfabeto(NoAVL **raiz, EntradaRepositorio entrada) {
-    if (!*raiz) {
-        *raiz = malloc(sizeof(NoAVL));
-        (*raiz)->entrada = entrada;
-        (*raiz)->esq = (*raiz)->dir = NULL;
-        (*raiz)->altura = 1;
-        return;
-    }
+NoAVL* insere_avl(NoAVL **raiz, EntradaRepositorio entrada) {
+    if (*raiz == NULL)
+        return cria_no_avl(entrada);
 
-    int cmp = strcmp(entrada.palavra, (*raiz)->entrada.palavra);
-    
-    if (cmp < 0) insere_avl_alfabeto(&(*raiz)->esq, entrada);
-    else if (cmp > 0) insere_avl_alfabeto(&(*raiz)->dir, entrada);
+    if (strcmp(entrada.palavra, (*raiz)->entrada.palavra) < 0)
+        (*raiz)->esq = insere_avl(&(*raiz)->esq, entrada);
+    else if (strcmp(entrada.palavra, (*raiz)->entrada.palavra) > 0)
+        (*raiz)->dir = insere_avl(&(*raiz)->dir, entrada);
     else {
-        // Atualiza frequência se palavra já existe
         (*raiz)->entrada.frequencia += entrada.frequencia;
-        return;
+        add_offset_avl(&(*raiz)->entrada, entrada.offsets[0]);
+        return *raiz;
     }
 
-    (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir));
-    int fb = balanceamento(*raiz);
+    (*raiz)->altura = 1 + ((altura((*raiz)->esq) > altura((*raiz)->dir)) ? altura((*raiz)->esq) : altura((*raiz)->dir));
 
-    // Balanceamentos
-    if (fb > 1 && strcmp(entrada.palavra, (*raiz)->esq->entrada.palavra) < 0)
-        *raiz = rotacao_direita(*raiz);
-    else if (fb < -1 && strcmp(entrada.palavra, (*raiz)->dir->entrada.palavra) > 0)
-        *raiz = rotacao_esquerda(*raiz);
-    else if (fb > 1 && strcmp(entrada.palavra, (*raiz)->esq->entrada.palavra) > 0) {
+    int balanceamento = fator_balanceamento(*raiz);
+
+    if (balanceamento > 1 && strcmp(entrada.palavra, (*raiz)->esq->entrada.palavra) < 0)
+        return rotacao_direita(*raiz);
+
+    if (balanceamento < -1 && strcmp(entrada.palavra, (*raiz)->dir->entrada.palavra) > 0)
+        return rotacao_esquerda(*raiz);
+
+    if (balanceamento > 1 && strcmp(entrada.palavra, (*raiz)->esq->entrada.palavra) > 0) {
         (*raiz)->esq = rotacao_esquerda((*raiz)->esq);
-        *raiz = rotacao_direita(*raiz);
+        return rotacao_direita(*raiz);
     }
-    else if (fb < -1 && strcmp(entrada.palavra, (*raiz)->dir->entrada.palavra) < 0) {
+
+    if (balanceamento < -1 && strcmp(entrada.palavra, (*raiz)->dir->entrada.palavra) < 0) {
         (*raiz)->dir = rotacao_direita((*raiz)->dir);
-        *raiz = rotacao_esquerda(*raiz);
+        return rotacao_esquerda(*raiz);
     }
+
+    return *raiz;
 }
 
-// Árvore de frequência
-void insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada) {
-    if (!*raiz) {
-        *raiz = malloc(sizeof(NoAVL));
-        (*raiz)->entrada = entrada;
-        (*raiz)->esq = (*raiz)->dir = NULL;
-        (*raiz)->altura = 1;
-        return;
-    }
-
-    if (entrada.frequencia < (*raiz)->entrada.frequencia)
-        insere_avl_frequencia(&(*raiz)->esq, entrada);
+EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, char *palavra) {
+    if (raiz == NULL)
+        return NULL;
+    if (strcmp(palavra, raiz->entrada.palavra) < 0)
+        return pesquisa_avl_alfabeto(raiz->esq, palavra);
+    else if (strcmp(palavra, raiz->entrada.palavra) > 0)
+        return pesquisa_avl_alfabeto(raiz->dir, palavra);
     else
-        insere_avl_frequencia(&(*raiz)->dir, entrada);
-
-    (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir));
-    int fb = balanceamento(*raiz);
-
-    if (fb > 1 && entrada.frequencia < (*raiz)->esq->entrada.frequencia)
-        *raiz = rotacao_direita(*raiz);
-    else if (fb < -1 && entrada.frequencia > (*raiz)->dir->entrada.frequencia)
-        *raiz = rotacao_esquerda(*raiz);
-    else if (fb > 1 && entrada.frequencia > (*raiz)->esq->entrada.frequencia) {
-        (*raiz)->esq = rotacao_esquerda((*raiz)->esq);
-        *raiz = rotacao_direita(*raiz);
-    }
-    else if (fb < -1 && entrada.frequencia < (*raiz)->dir->entrada.frequencia) {
-        (*raiz)->dir = rotacao_direita((*raiz)->dir);
-        *raiz = rotacao_esquerda(*raiz);
-    }
+        return &raiz->entrada;
 }
 
-// Funções de pesquisa
-EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, const char *palavra) {
-    if (!raiz) return NULL;
-    
-    int cmp = strcmp(palavra, raiz->entrada.palavra);
-    if (cmp == 0) return &raiz->entrada;
-    return pesquisa_avl_alfabeto((cmp < 0) ? raiz->esq : raiz->dir, palavra);
-}
-
-// Função de destruição
 void destroi_avl(NoAVL *raiz) {
-    if (raiz) {
+    if (raiz != NULL) {
         destroi_avl(raiz->esq);
         destroi_avl(raiz->dir);
         free(raiz->entrada.palavra);
@@ -121,11 +117,54 @@ void destroi_avl(NoAVL *raiz) {
     }
 }
 
-// Percurso para frequência
-void em_ordem_frequencia(NoAVL *raiz) {
-    if (raiz) {
-        em_ordem_frequencia(raiz->dir); // Ordem decrescente
-        printf("%-20s %d ocorrencias\n", raiz->entrada.palavra, raiz->entrada.frequencia);
-        em_ordem_frequencia(raiz->esq);
+void em_ordem_frequencia(NoAVL *no) {
+    if (no) {
+        em_ordem_frequencia(no->dir);
+        printf("%s: %d\n", no->entrada.palavra, no->entrada.frequencia);
+        em_ordem_frequencia(no->esq);
     }
+}
+
+NoAVL* insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada) {
+    if (*raiz == NULL) {
+        return cria_no_avl(entrada);
+    }
+
+    if (entrada.frequencia > (*raiz)->entrada.frequencia) {
+        (*raiz)->esq = insere_avl_frequencia(&(*raiz)->esq, entrada);
+    } else if (entrada.frequencia < (*raiz)->entrada.frequencia) {
+        (*raiz)->dir = insere_avl_frequencia(&(*raiz)->dir, entrada);
+    } else {
+        int cmp = strcmp(entrada.palavra, (*raiz)->entrada.palavra);
+        if (cmp < 0) {
+            (*raiz)->esq = insere_avl_frequencia(&(*raiz)->esq, entrada);
+        } else if (cmp > 0) {
+            (*raiz)->dir = insere_avl_frequencia(&(*raiz)->dir, entrada);
+        } else {
+            free(entrada.palavra);
+            free(entrada.offsets);
+            return *raiz;
+        }
+    }
+
+    (*raiz)->altura = 1 + ((altura((*raiz)->esq) > altura((*raiz)->dir)) ? altura((*raiz)->esq) : altura((*raiz)->dir));
+    int balanceamento = fator_balanceamento(*raiz);
+
+    if (balanceamento > 1 && fator_balanceamento((*raiz)->esq) >= 0)
+        return rotacao_direita(*raiz);
+
+    if (balanceamento > 1 && fator_balanceamento((*raiz)->esq) < 0) {
+        (*raiz)->esq = rotacao_esquerda((*raiz)->esq);
+        return rotacao_direita(*raiz);
+    }
+
+    if (balanceamento < -1 && fator_balanceamento((*raiz)->dir) <= 0)
+        return rotacao_esquerda(*raiz);
+
+    if (balanceamento < -1 && fator_balanceamento((*raiz)->dir) > 0) {
+        (*raiz)->dir = rotacao_direita((*raiz)->dir);
+        return rotacao_esquerda(*raiz);
+    }
+
+    return *raiz;
 }
