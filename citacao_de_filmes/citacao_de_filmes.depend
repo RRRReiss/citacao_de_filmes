@@ -1,36 +1,36 @@
 # depslib dependency file v1.0
 1744200140 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\citacoes.c
 
-1744478164 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.c
+1744491378 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.c
 	"arvore_avl.h"
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 
-1744465250 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.h
+1744491378 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_avl.h
 	"citacoes.h"
 
-1744464786 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\citacoes.h
+1744491378 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\citacoes.h
 
-1744464786 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.c
+1744491378 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.c
 	"arvore_binaria.h"
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 
-1744465250 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.h
+1744491378 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\arvore_binaria.h
 	"citacoes.h"
 
-1744478164 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.c
+1744491378 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.c
 	"busca_binaria.h"
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 
-1744465250 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.h
+1744491378 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\busca_binaria.h
 	"citacoes.h"
 
-1744478181 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\main.c
+1744491378 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -40,14 +40,14 @@
 	"arvore_binaria.h"
 	"arvore_avl.h"
 
-1744474548 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.h
+1744491378 c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.h
 	<stdio.h>
 	"arvore_avl.h"
 	"arvore_binaria.h"
 	"busca_binaria.h"
 	"citacoes.h"
 
-1744478164 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.c
+1744491378 source:c:\dev\githubdesktop\citacao_de_filmes\citacao_de_filmes\processamento.c
 	"processamento.h"
 	<ctype.h>
 	<string.h>
