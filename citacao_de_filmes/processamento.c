@@ -21,7 +21,8 @@ void normaliza_palavra(char *palavra) {
 
 void analisa_linha(const char *linha, InfoCitacao *info) {
     char buffer[1024], *pbuffer;
-    char citacao[500], filme[500], ano[24];
+    char citacao[500], filme[500];
+    int ano;
     strcpy(buffer, linha);
 
     pbuffer = strtok(buffer, "\"");
@@ -35,8 +36,8 @@ void analisa_linha(const char *linha, InfoCitacao *info) {
     strcpy(info->filme, filme);
 
     pbuffer = strtok(NULL, "\n");
-    strcpy(ano, pbuffer);
-    info->ano = atoi(pbuffer);
+    ano = atoi(pbuffer);
+    info->ano = ano;
 }
 
 void processa_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, NoArvoreBusca **raiz_arvbus, NoAVL **raiz_avl) {
