@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// cria um novo no da arvore avl com os dados da entrada
 NoAVL* cria_no_avl(EntradaRepositorio entrada) {
     NoAVL *novo_no = (NoAVL*)malloc(sizeof(NoAVL));
     novo_no->entrada.palavra = strdup(entrada.palavra);
@@ -16,14 +17,17 @@ NoAVL* cria_no_avl(EntradaRepositorio entrada) {
     return novo_no;
 }
 
+// retorna a altura do no (ou zero se for nulo)
 int altura(NoAVL *no) {
     return no ? no->altura : 0;
 }
 
+// calcula o fator de balanceamento (altura da esquerda - direita)
 int fator_balanceamento(NoAVL *no) {
     return no ? altura(no->esq) - altura(no->dir) : 0;
 }
 
+// rotacao simples para a direita (caso de desbalanceamento esquerda-esquerda)
 NoAVL* rotacao_direita(NoAVL *y) {
     NoAVL *x = y->esq;
     NoAVL *T2 = x->dir;
@@ -37,6 +41,7 @@ NoAVL* rotacao_direita(NoAVL *y) {
     return x;
 }
 
+// rotacao simples para a esquerda (caso de desbalanceamento direita-direita)
 NoAVL* rotacao_esquerda(NoAVL *x) {
     NoAVL *y = x->dir;
     NoAVL *T2 = y->esq;
@@ -50,6 +55,7 @@ NoAVL* rotacao_esquerda(NoAVL *x) {
     return y;
 }
 
+// adiciona offset se ele ainda nao estiver presente na entrada
 void add_offset_avl(EntradaRepositorio *entrada, long offset) {
     for(int i = 0; i < entrada->offset_cont; i++) {
         if(entrada->offsets[i] == offset)
@@ -59,6 +65,7 @@ void add_offset_avl(EntradaRepositorio *entrada, long offset) {
     entrada->offsets[entrada->offset_cont++] = offset;
 }
 
+// insere uma entrada na avl ordenada alfabeticamente
 NoAVL* insere_avl(NoAVL **raiz, EntradaRepositorio entrada) {
     if (*raiz == NULL)
         return cria_no_avl(entrada);
@@ -74,7 +81,6 @@ NoAVL* insere_avl(NoAVL **raiz, EntradaRepositorio entrada) {
     }
 
     (*raiz)->altura = 1 + ((altura((*raiz)->esq) > altura((*raiz)->dir)) ? altura((*raiz)->esq) : altura((*raiz)->dir));
-
     int balanceamento = fator_balanceamento(*raiz);
 
     if (balanceamento > 1 && strcmp(entrada.palavra, (*raiz)->esq->entrada.palavra) < 0)
@@ -96,6 +102,7 @@ NoAVL* insere_avl(NoAVL **raiz, EntradaRepositorio entrada) {
     return *raiz;
 }
 
+// busca uma palavra na avl alfabetica
 EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, char *palavra) {
     if (raiz == NULL)
         return NULL;
@@ -107,6 +114,7 @@ EntradaRepositorio *pesquisa_avl_alfabeto(NoAVL *raiz, char *palavra) {
         return &raiz->entrada;
 }
 
+// libera toda a memoria da arvore avl
 void destroi_avl(NoAVL *raiz) {
     if (raiz != NULL) {
         destroi_avl(raiz->esq);
@@ -117,6 +125,7 @@ void destroi_avl(NoAVL *raiz) {
     }
 }
 
+// percorre a avl de frequencia imprimindo as palavras em ordem decrescente
 void em_ordem_frequencia(NoAVL *no) {
     if (no) {
         em_ordem_frequencia(no->dir);
@@ -125,6 +134,7 @@ void em_ordem_frequencia(NoAVL *no) {
     }
 }
 
+// insere uma entrada na avl de frequencia
 NoAVL* insere_avl_frequencia(NoAVL **raiz, EntradaRepositorio entrada) {
     if (*raiz == NULL) {
         return cria_no_avl(entrada);

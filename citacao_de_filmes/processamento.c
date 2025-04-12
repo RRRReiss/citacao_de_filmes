@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//remove caracteres não alfanuméricos e converte para minúsculo
+// remove caracteres nao alfanumericos e converte para minusculo
 void normaliza_palavra(char *palavra) {
     int i = 0, j = 0;
     while (palavra[i]) {
@@ -19,6 +19,7 @@ void normaliza_palavra(char *palavra) {
     palavra[j] = '\0';
 }
 
+// separa os campos da linha e aloca memoria para citacao, filme e ano
 void analisa_linha(const char *linha, InfoCitacao *info) {
     char buffer[1024], *pbuffer;
     char citacao[500], filme[500];
@@ -41,14 +42,16 @@ void analisa_linha(const char *linha, InfoCitacao *info) {
     strcpy(info->ano, ano);
 }
 
+// le o arquivo de citacoes e atualiza as estruturas de busca
 void processa_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, NoArvoreBusca **raiz_arvbus, NoAVL **raiz_avl) {
     char linha[1024];
     long offset;
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
-        perror("Erro ao abrir o arquivo.\n");
+        perror("erro ao abrir o arquivo");
         return;
     }
+
     offset = ftell(arquivo);
     while (fgets(linha, sizeof(linha), arquivo)) {
         InfoCitacao info;
@@ -64,15 +67,20 @@ void processa_arquivo(const char *nome_arquivo, VetorBuscaBinaria *vet_busbin, N
                 entrada.offsets = malloc(sizeof(long));
                 entrada.offsets[0] = offset;
                 entrada.offset_cont = 1;
+
+                // insere a palavra nas tres estruturas
                 insere_busbin(vet_busbin, entrada);
                 insere_arvbus(raiz_arvbus, entrada);
                 *raiz_avl = insere_avl(raiz_avl, entrada);
             }
             token = strtok(NULL, " ");
         }
+
+        // libera a memoria da citacao
         free(info.citacao);
         free(info.filme);
         free(info.ano);
+
         offset = ftell(arquivo);
     }
     fclose(arquivo);
