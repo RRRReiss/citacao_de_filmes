@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void add_offset(EntradaRepositorio *entrada, long offset) {
+void add_offset_arvbus(EntradaRepositorio *entrada, long offset) {
     for(int i = 0; i < entrada->offset_cont; i++) {
         if(entrada->offsets[i] == offset)
             return;
@@ -12,27 +12,27 @@ void add_offset(EntradaRepositorio *entrada, long offset) {
     entrada->offsets[entrada->offset_cont++] = offset;
 }
 
-void insere_arvbus(NoArvoreBusca **raiz, char *palavra, int cont, long offset){
+void insere_arvbus(NoArvoreBusca **raiz, EntradaRepositorio entrada){
     NoArvoreBusca *novo_no;
     if(*raiz == NULL){
         novo_no = (NoArvoreBusca*)malloc(sizeof(NoArvoreBusca));
-        strcpy(novo_no->entrada.palavra, palavra);
-        novo_no->entrada.frequencia = cont;
-        novo_no->entrada.offsets = (long*)malloc(sizeof(long));
-        novo_no->entrada.offsets[0] = offset;
-        novo_no->entrada.offset_cont = 1;
+        novo_no->entrada.palavra = strdup(entrada.palavra);
+        novo_no->entrada.frequencia = entrada.frequencia;
+        novo_no->entrada.offsets = malloc(sizeof(long));
+        novo_no->entrada.offsets[0] = entrada.offsets[0];
+        novo_no->entrada.offset_cont = entrada.offset_cont;
         novo_no->esq = NULL;
         novo_no->dir = NULL;
         *raiz = novo_no;
         return;
     }
-    if(strcmp(palavra, (*raiz)->entrada.palavra) < 0)
-        insere_arvbus(&(*raiz)->esq, palavra, cont, offset);
-    else if(strcmp(palavra, (*raiz)->entrada.palavra) > 0)
-        insere_arvbus(&(*raiz)->dir, palavra, cont, offset);
+    if(strcmp(entrada.palavra, (*raiz)->entrada.palavra) < 0)
+        insere_arvbus(&(*raiz)->esq, entrada);
+    else if(strcmp(entrada.palavra, (*raiz)->entrada.palavra) > 0)
+        insere_arvbus(&(*raiz)->dir, entrada);
     else{
-        (*raiz)->entrada.frequencia += cont;
-        add_offset(&(*raiz)->entrada, offset);
+        (*raiz)->entrada.frequencia += entrada.frequencia;
+        add_offset_arvbus(&(*raiz)->entrada, entrada.offsets[0]);
     }
 }
 
