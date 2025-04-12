@@ -3,26 +3,26 @@
 #include <string.h>
 #include <stdio.h>
 
+// realiza busca binaria pela palavra e retorna a posicao ou -1 se nao encontrar
 int busca_binaria(EntradaRepositorio *entradas, int qtd_entradas, char *palavra) {
     int inf = 0, sup = qtd_entradas - 1, meio;
     while (inf <= sup) {
-        meio = inf + (sup - inf) / 2; // Evita overflow para índices grandes
+        meio = inf + (sup - inf) / 2;
         int cmp = strcmp(entradas[meio].palavra, palavra);
-        if (cmp == 0)
-            return meio;
-        else if (cmp > 0)
-            sup = meio - 1;
-        else // cmp < 0
-            inf = meio + 1;
+        if (cmp == 0) return meio;
+        else if (cmp > 0) sup = meio - 1;
+        else inf = meio + 1;
     }
-    return -1; // Não encontrado
+    return -1;
 }
 
+// inicializa o vetor de busca binaria
 void inicializa_busbin(VetorBuscaBinaria *vetor){
     vetor->entradas = NULL;
     vetor->tamanho = 0;
 }
 
+// libera toda a memoria usada pelo vetor
 void destroi_busbin(VetorBuscaBinaria *vetor){
     for(int i = 0; i < vetor->tamanho; i++){
         free(vetor->entradas[i].palavra);
@@ -33,12 +33,14 @@ void destroi_busbin(VetorBuscaBinaria *vetor){
     vetor->tamanho = 0;
 }
 
+// insere palavra no vetor mantendo a ordenacao
 void insere_busbin(VetorBuscaBinaria *vetor, EntradaRepositorio entrada) {
     int pos = busca_binaria(vetor->entradas, vetor->tamanho, entrada.palavra);
 
-    if (pos >= 0) { // Palavra já existe
+    if (pos >= 0) {
         vetor->entradas[pos].frequencia += entrada.frequencia;
-        // Lógica para adicionar offset (já existente e parece ok, mas verifica se offset já existe)
+
+        // evita duplicar o offset
         int offset_existe = 0;
         for (int j = 0; j < vetor->entradas[pos].offset_cont; j++) {
             if (vetor->entradas[pos].offsets[j] == entrada.offsets[0]) {
@@ -46,47 +48,46 @@ void insere_busbin(VetorBuscaBinaria *vetor, EntradaRepositorio entrada) {
                 break;
             }
         }
+
         if (!offset_existe) {
-            vetor->entradas[pos].offsets = realloc(vetor->entradas[pos].offsets, (vetor->entradas[pos].offset_cont + 1) * sizeof(long));
-            // Adicionar verificação de falha do realloc seria bom aqui
+            vetor->entradas[pos].offsets = realloc(vetor->entradas[pos].offsets,
+                (vetor->entradas[pos].offset_cont + 1) * sizeof(long));
             vetor->entradas[pos].offsets[vetor->entradas[pos].offset_cont++] = entrada.offsets[0];
         }
-        // Como a palavra já existe, podemos liberar a memória da 'entrada' que não será usada
-         free(entrada.palavra);
-         free(entrada.offsets);
 
-    } else { // Palavra nova, precisa inserir em ordem
+        // libera a entrada recebida pois ja existe no vetor
+        free(entrada.palavra);
+        free(entrada.offsets);
+
+    } else {
+        // palavra nova, inserir ordenado
         int i = 0;
-        // Encontra a posição correta para manter a ordem
         while (i < vetor->tamanho && strcmp(vetor->entradas[i].palavra, entrada.palavra) < 0) {
             i++;
         }
 
         EntradaRepositorio *temp = realloc(vetor->entradas, (vetor->tamanho + 1) * sizeof(EntradaRepositorio));
         if (temp == NULL) {
-            perror("Erro ao realocar memoria para entradas no vetor");
-            // Considerar uma forma menos drástica que exit(1) se possível
+            perror("erro ao realocar memoria");
             exit(1);
         }
-        vetor->entradas = temp;
 
-        // Move os elementos para abrir espaço na posição 'i'
+        vetor->entradas = temp;
         memmove(&vetor->entradas[i + 1], &vetor->entradas[i], (vetor->tamanho - i) * sizeof(EntradaRepositorio));
 
-        // Insere a nova entrada (cópia profunda)
-        vetor->entradas[i].palavra = entrada.palavra; // Transfere a posse do ponteiro
+        vetor->entradas[i].palavra = entrada.palavra;
         vetor->entradas[i].frequencia = entrada.frequencia;
-        vetor->entradas[i].offsets = entrada.offsets; // Transfere a posse do ponteiro
+        vetor->entradas[i].offsets = entrada.offsets;
         vetor->entradas[i].offset_cont = entrada.offset_cont;
 
         vetor->tamanho++;
     }
 }
 
-
+// retorna a entrada encontrada ou NULL
 EntradaRepositorio *pesquisa_busbin(VetorBuscaBinaria *vetor, char *palavra){
     int pos = busca_binaria(vetor->entradas, vetor->tamanho, palavra);
-    if(pos >= 0 && pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, palavra) == 0){
+    if (pos >= 0 && pos < vetor->tamanho && strcmp(vetor->entradas[pos].palavra, palavra) == 0) {
         return &vetor->entradas[pos];
     }
     return NULL;
